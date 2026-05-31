@@ -91,6 +91,15 @@ export default function SignInPage() {
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
+
+                    <div className="w-full  flex justify-end">
+                      <Link
+                        className="underline text-[10px] text-right w-full text-blue-500 "
+                        href={"/forgot-password"}
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
                   </Field>
                 )}
               />
@@ -101,8 +110,8 @@ export default function SignInPage() {
             </Button>
           </form>
 
-          <CardFooter className="mt-1 flex  p-0">
-            <div className="flex gap-1  w-full ">
+          <CardFooter className="flex   items-center justify-center mt-4">
+            <div className="flex gap-1 items-center justify-center w-full ">
               <p className="text-muted-foreground">
                 Don&apos;t have an account?
               </p>
