@@ -133,12 +133,6 @@ export default function SignUpPage() {
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
-
-                    <div>
-                      <Link href={"/forgot-password"}>
-                        Forget you password?
-                      </Link>
-                    </div>
                   </Field>
                 )}
               />
