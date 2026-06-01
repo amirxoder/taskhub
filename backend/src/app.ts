@@ -19,7 +19,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-routes.use("/api", routes);
+app.use("/api", routes);
 
 app.get("/health-check", async (req: Request, res: Response) => {
   res.status(200).json({

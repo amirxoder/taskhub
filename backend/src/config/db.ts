@@ -5,6 +5,7 @@ export const connectDB = async (maxRetries = 5, delayMS = 3000) => {
   for (let i = 1; i <= maxRetries; i++) {
     try {
       await mongoose.connect(env.MONGODB_URI!, {
+        dbName: "task_hub",
         maxPoolSize: 20,
         minPoolSize: 5,
         serverSelectionTimeoutMS: 5000,
