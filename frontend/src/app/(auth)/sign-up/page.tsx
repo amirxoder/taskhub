@@ -23,11 +23,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { signUpSchema } from "./lib/schema";
+import { useRegisterMutation } from "./services/signUpApi";
 
 // schema type
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUpPage() {
+  const [signUp, { isLoading }] = useRegisterMutation();
+
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -38,9 +41,13 @@ export default function SignUpPage() {
     },
   });
 
-  const onSubmitHandler = ({ email, password }: SignUpFormData) => {
-    console.log(email, password);
-    form.reset();
+  const onSubmitHandler = async ({ email, password, name }: SignUpFormData) => {
+    try {
+      await signUp({ email, password, name });
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div
