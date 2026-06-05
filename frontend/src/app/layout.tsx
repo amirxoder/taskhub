@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import StoreProvider from "./StoreProvider";
+import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,7 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("h-full", "antialiased", poppins.variable)}>
       <body className="min-h-full flex flex-col">
-        <StoreProvider>{children}</StoreProvider>
+        <StoreProvider>
+          <Toaster />
+          {children}
+        </StoreProvider>
       </body>
     </html>
   );

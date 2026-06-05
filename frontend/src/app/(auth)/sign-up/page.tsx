@@ -5,6 +5,8 @@ import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { LogIn } from "lucide-react";
 
+import { toast } from "react-hot-toast";
+
 import {
   Card,
   CardContent,
@@ -24,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { signUpSchema } from "./lib/schema";
 import { useRegisterMutation } from "./services/signUpApi";
+import { Spinner } from "@/components/ui/spinner";
 
 // schema type
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -42,12 +45,13 @@ export default function SignUpPage() {
   });
 
   const onSubmitHandler = async ({ email, password, name }: SignUpFormData) => {
-    try {
-      await signUp({ email, password, name });
-      form.reset();
-    } catch (error) {
-      console.log(error);
-    }
+    // const response = await signUp({ email, password, name }).unwrap();
+
+    toast.promise(signUp({ email, password, name }).unwrap(), {
+      loading: "Signing up...",
+      success: <b>Sign up successfully</b>,
+      error: <b>Could not sign up!</b>,
+    });
   };
   return (
     <div
@@ -144,9 +148,19 @@ export default function SignUpPage() {
                 )}
               />
             </FieldGroup>
-            <Button type="submit" className={"w-full mt-4 p-4 text-sm"}>
-              Sign up
-              <LogIn />
+            <Button
+              disabled={isLoading}
+              type="submit"
+              className={"w-full mt-4 p-4 text-sm"}
+            >
+              {!isLoading ? (
+                <>
+                  Sign up
+                  <LogIn />
+                </>
+              ) : (
+                <Spinner />
+              )}
             </Button>
           </form>
 
