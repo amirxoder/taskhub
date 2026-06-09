@@ -1,0 +1,30 @@
+import Axios from "@/config/axios/Axios";
+import { AxiosError } from "axios";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  const apiAddr = "/auth/register";
+
+  const body = await req.json();
+  console.log("Received sign-up data:", body);
+  const bodyDate = {
+    name: body.name,
+    email: body.email,
+    password: body.password,
+  };
+
+  try {
+    const res = await Axios.post(apiAddr, bodyDate);
+    const data = await res.data;
+
+    return NextResponse.json(data?.data);
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error("Error during sign-up", axiosError.message);
+    const statusCode = axiosError.response?.status || 500;
+    const errorMessage = axiosError.response?.data || {
+      error: "An error occurred during sign-up",
+    };
+    return NextResponse.json(errorMessage, { status: statusCode });
+  }
+}

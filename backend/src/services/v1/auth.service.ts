@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/user.model.js";
 import { AppError } from "../../utils/AppError.js";
+import { env } from "../../config/env.js";
 
 export class AuthService {
   // Find user by email (exclude password by default)
@@ -28,6 +29,12 @@ export class AuthService {
       password: hashedPassword,
     });
     const { password, ...userWithoutPassword } = user.toObject();
-    return userWithoutPassword;
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      env.JWT_SECRET!,
+      { expiresIn: "1d" },
+    );
+    return { ...userWithoutPassword, token };
   }
 }

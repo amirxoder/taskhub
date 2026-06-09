@@ -5,16 +5,18 @@ import {
   SignUpRequestInterface,
 } from "../types/signUp";
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_GATEWAY;
+
 export const signUpApi = createApi({
   reducerPath: "signUpApi",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API }),
+  baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (build) => ({
     register: build.mutation<
       ResponseType<SignUpResponseInterface>,
       SignUpRequestInterface
     >({
       query: (body) => ({
-        url: "/auth/register",
+        url: "/sign-up/api",
         method: "POST",
         body,
       }),
