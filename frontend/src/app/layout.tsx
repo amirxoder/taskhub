@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className={cn("h-full", "antialiased", poppins.variable)}>
       <body className="min-h-full flex flex-col">
         <StoreProvider>
-          <Toaster />
+          <Toaster position="top-center" />
           {children}
         </StoreProvider>
       </body>

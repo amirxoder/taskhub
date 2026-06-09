@@ -1,4 +1,3 @@
-import { email, success } from "zod";
 import { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { AuthService } from "../../services/v1/auth.service.js";
@@ -12,7 +11,7 @@ export const register = asyncHandler(
     if (existingUser) {
       throw AppError.conflict("Email already registered", "EMAIL_EXISTS");
     }
-    // create user
+
     const newUser = await AuthService.createUser({ name, password, email });
 
     res.status(200).json({

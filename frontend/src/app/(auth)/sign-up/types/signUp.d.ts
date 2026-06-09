@@ -1,4 +1,5 @@
 export interface SignUpResponseInterface {
+  _id: string;
   email: string;
   name: string;
   isEmailVerified: boolean;
