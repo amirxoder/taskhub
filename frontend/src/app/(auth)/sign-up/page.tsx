@@ -27,12 +27,14 @@ import Link from "next/link";
 import { signUpSchema } from "./lib/schema";
 import { useRegisterMutation } from "./services/signUpApi";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
 
 // schema type
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUpPage() {
   const [signUp, { isLoading }] = useRegisterMutation();
+  const { replace } = useRouter();
 
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -47,11 +49,21 @@ export default function SignUpPage() {
   const onSubmitHandler = async ({ email, password, name }: SignUpFormData) => {
     // const response = await signUp({ email, password, name }).unwrap();
 
-    toast.promise(signUp({ email, password, name }).unwrap(), {
-      loading: "Signing up...",
-      success: <b>Sign up successfully</b>,
-      error: <b>Could not sign up!</b>,
-    });
+    toast.promise(
+      signUp({ email, password, name })
+        .unwrap()
+        .then((data) => {
+          console.log("Sign-up response data:", data);
+          if (data.success) {
+            replace("/dashboard");
+          }
+        }),
+      {
+        loading: "Signing up...",
+        success: <b>Sign up successfully</b>,
+        error: <b>Could not sign up!</b>,
+      },
+    );
   };
   return (
     <div

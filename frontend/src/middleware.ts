@@ -6,9 +6,12 @@ const PROTECTED_PAGES = ["/dashboard", "/profile"];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
+  console.log("Middleware check - Token:", token);
   const isAuthPage = AUTH_PAGES.some((page) =>
     request.nextUrl.pathname.startsWith(page),
   );
+
+  console.log(isAuthPage ? "Accessing auth page" : "Accessing non-auth page");
   const isProtectedPage = PROTECTED_PAGES.some((page) =>
     request.nextUrl.pathname.startsWith(page),
   );
@@ -19,6 +22,8 @@ export function middleware(request: NextRequest) {
   if (!token && isProtectedPage) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
