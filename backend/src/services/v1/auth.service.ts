@@ -1,40 +1,49 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/user.model.js";
-import { AppError } from "../../utils/AppError.js";
-import { env } from "../../config/env.js";
+import {env} from "../../config/env.js";
+import Verification from "../../models/verification.model.js";
 
 export class AuthService {
-  // Find user by email (exclude password by default)
-  static async findUserByEmail(email: string) {
-    return await User.findOne({ email });
-  }
+    // Find user by email (exclude password by default)
+    static async findUserByEmail(email: string) {
+        return await User.findOne({email});
+    }
 
-  // Find user by email include the password filed (for Login)
-  static async findUserWithPassword(email: string) {
-    return await User.findOne({ email }).select("+password");
-  }
+    // Find user by email include the password filed (for Login)
+    static async findUserWithPassword(email: string) {
+        return await User.findOne({email}).select("+password");
+    }
 
-  //   Create new user with hashed password
+    //   Create new user with hashed password
 
-  static async createUser(userData: {
-    email: string;
-    password: string;
-    name: string;
-  }) {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    const user = await User.create({
-      name: userData.name,
-      email: userData.email,
-      password: hashedPassword,
-    });
-    const { password, ...userWithoutPassword } = user.toObject();
+    static async createUser(userData: {
+        email: string;
+        password: string;
+        name: string;
+    }) {
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const user = await User.create({
+            name: userData.name,
+            email: userData.email,
+            password: hashedPassword,
+        });
+        const {password, ...userWithoutPassword} = user.toObject();
 
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      env.JWT_SECRET!,
-      { expiresIn: "1d" },
-    );
-    return { ...userWithoutPassword, token };
-  }
+        const token = jwt.sign(
+            {userId: user._id, email: user.email},
+            env.JWT_SECRET!,
+            {expiresIn: "1d"},
+        );
+
+        await Verification.create({
+            userId: user._id,
+            token,
+            expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+        })
+
+        // send email
+
+        return {...userWithoutPassword, token};
+    }
 }
